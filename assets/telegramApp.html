@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+      /* 添加基本样式 */
+      body{
+        color: var(--tg-theme-text-color);
+        background: var(--tg-theme-bg-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 18px;
+      }
+      .hint{
+        color: var(--tg-theme-hint-color);
+      }
+
+      .link{
+        color: var(--tg-theme-link-color);
+      }
+
+      .button{
+        background: var(--tg-theme-button-color);
+        color: var(--tg-theme-button-text-color);
+        border: none;
+        font-size: 18px;
+      }
+
+      .button:not(:last-child){
+        margin-bottom: 20px;
+      }
+
+      #usercard{
+        text-align: center;
+      }
+  </style>
+</head>
+<body>
+  <div id="usercard"></div>
+  <p>Just text</p>
+  <a class="link" href="https://www.baidu.com/">Link</a>
+  <p class="hint">Some little hint</p>
+  <button id="btn" class="button">Show/Hide Main Button</button>
+  <button id="btnED" class="button">Enable/Disable Main Button</button>
+
+  <script>
+
+    //主要按钮的颜色
+    let tg = window.Telegram.WebApp
+    tg.expand()
+    tg.MainButton.text = "Changed Text"
+    tg.MainButton.setText("Changed Text1")
+    tg.MainButton.textColor = "#F55353"
+    tg.MainButton.color = "#143F6B"
+    tg.MainButton.setParams({"color":"#143F6B"})
+    // 显示用户的信息
+    let usercard = document.getElementById('usercard');
+    //创建一个新的p
+    let profName = document.createElement('p')
+    profName.innerText = `${tg.initDataUnsafe.user.first_name}
+      ${tg.initDataUnsafe.user.last_name}
+      ${tg.initDataUnsafe.user.username} (${tg.initDataUnsafe.user.language_code})`
+    //将用户的信息添加到div（class=“usercard”）
+    usercard.appendChild(profName)
+
+    //显示用户的唯一标识
+    let userid = document.createElement('p')
+    userid.innerText = `${tg.initDataUnsafe.user.id}`
+    usercard.appendChild(userid)
+
+    //点击按钮的函数（显示或者隐藏）
+    btn.addEventListener('click',function () {
+      if(tg.MainButton.isVisible){
+        tg.MainBUtton.hide()
+      }else {
+        tg.MainButton.show()
+      }
+    })
+    //点击按钮的函数(开启或者关闭)
+    let btnED = document.getElementById("btnED")
+    btnED.addEventListener('click',function () {
+      if (tg.MainButton.isActive){
+        tg.MainButton.setParams({"color": "#E0FFFF"})
+        tg.MainButton.disable()
+      }else {
+        tg.MainButton.setParameters({"color": "#143F6B"})
+        tg.MainButton.enable()
+      }
+    })
+    //点击主要按钮会出现的文本
+    Telegram.WebApp.onEvent('mainButtonClicked',function () {
+      tg.sendData('some string that we need to send')
+    })
+
+
+  </script>
+</body>
+</html>
